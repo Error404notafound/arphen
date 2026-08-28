@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arphen Social</title>
+    <style>
+        /* ================= VARIÁVEIS E RESET ================= */
+        :root {
+            --bg-main: #18191a;
+            --bg-card: #242526;
+            --bg-hover: #3a3b3c;
+            --text-main: #e4e6eb;
+            --text-muted: #b0b3b8;
+            --accent-blue: #2374e1;
+            --border-color: #3e4042;
+        }
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        * { box-sizing: border-box; }
+
+        /* ================= LAYOUT PRINCIPAL ================= */
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: var(--bg-main);
+            position: relative;
+            padding-bottom: 80px;
+        }
+        .header {
+            background-color: var(--bg-card);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header h1 { margin: 0; font-size: 20px; color: var(--accent-blue); }
+        
+        /* ================= FEED E CARDS ================= */
+        .feed { padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+        .post-card {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-hover); }
+        .post-author { font-weight: bold; font-size: 15px; }
+        .post-time { font-size: 12px; color: var(--text-muted); }
+        .post-content { font-size: 15px; line-height: 1.4; margin-bottom: 15px; word-wrap: break-word; }
+        
+        /* ================= BOTÕES E MODAL ================= */
+        .fab-btn {
+            position: fixed; bottom: 20px; right: calc(50% - 230px); /* Centralizado no mobile-first */
+            background-color: var(--accent-blue); color: white;
+            width: 56px; height: 56px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: none; z-index: 90;
+        }
+        @media (max-width: 500px) { .fab-btn { right: 20px; } }
+        
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8); display: none;
+            justify-content: center; align-items: flex-end; z-index: 1000;
+        }
+        .modal-content {
+            background: var(--bg-card); width: 100%; max-width: 500px;
+            border-radius: 15px 15px 0 0; padding: 20px;
+            transform: translateY(100%); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        textarea {
+            width: 100%; height: 100px; background: var(--bg-hover);
+            border: 1px solid var(--border-color); border-radius: 8px;
+            color: white; padding: 12px; font-size: 16px; resize: none; outline: none;
+        }
+        .btn-submit {
+            width: 100%; background: var(--accent-blue); color: white;
+            border: none; padding: 12px; border-radius: 8px;
+            font-weight: bold; font-size: 16px; margin-top: 15px; cursor: pointer;
+        }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- CABEÇALHO -->
+    <header class="header">
+        <h1>Arphen</h1>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="user-display" style="font-size: 14px; color: var(--text-muted);"></span>
+            <img id="my-avatar" class="avatar" style="width: 32px; height: 32px;" src="" alt="Me">
+        </div>
+    </header>
+
+    <!-- FEED DE POSTS -->
+    <main class="feed" id="feed-container">
+        <p style="text-align: center; color: var(--text-muted);">Carregando posts...</p>
+    </main>
+
+    <!-- BOTÃO FLUTUANTE PARA NOVO POST -->
+    <button class="fab-btn" id="btn-open-modal">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+    </button>
+</div>
+
+<!-- MODAL DE CRIAÇÃO DE POST -->
+<div class="modal-overlay" id="post-modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Criar Post</h3>
+            <span id="btn-close-modal" style="cursor: pointer; color: var(--text-muted); font-size: 20px;">&times;</span>
+        </div>
+        <textarea id="post-input" placeholder="O que está acontecendo?"></textarea>
+        <button class="btn-submit" id="btn-submit-post">Publicar</button>
+    </div>
+</div>
+
+<!-- ================= LÓGICA JAVASCRIPT E FIREBASE ================= -->
+<script type="module">
+    // 1. Importações do Firebase v9 (Usando CDN para rodar direto no HTML)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    // 2. Configuração fornecida por você
+    const firebaseConfig = {
+        apiKey: "AIzaSyDT4HGQrb01P7cyJzd3hQ8kjg-EZGBEB1s",
+        authDomain: "arphen-be704.firebaseapp.com",
+        projectId: "arphen-be704",
+        storageBucket: "arphen-be704.firebasestorage.app",
+        messagingSenderId: "164337006671",
+        appId: "1:164337006671:web:98ec3900cdbd86b6fb523a"
+    };
+
+    // 3. Inicialização
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 4. Lógica de Usuário Simples (Local Storage)
+    let username = localStorage.getItem("arphen_user");
+    if (!username) {
+        username = prompt("Bem-vindo ao Arphen! Qual o seu nome?") || "Anônimo_" + Math.floor(Math.random() * 1000);
+        localStorage.setItem("arphen_user", username);
+    }
+    
+    // Atualiza UI do usuário logado
+    document.getElementById("user-display").innerText = username;
+    document.getElementById("my-avatar").src = `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
+
+    // 5. Elementos do DOM
+    const modal = document.getElementById("post-modal");
+    const btnOpen = document.getElementById("btn-open-modal");
+    const btnClose = document.getElementById("btn-close-modal");
+    const btnSubmit = document.getElementById("btn-submit-post");
+    const postInput = document.getElementById("post-input");
+    const feedContainer = document.getElementById("feed-container");
+
+    // 6. Controle do Modal
+    const toggleModal = (show) => {
+        if (show) {
+            modal.classList.add("active");
+            postInput.focus();
+        } else {
+            modal.classList.remove("active");
+            postInput.value = "";
+        }
+    };
+    btnOpen.addEventListener("click", () => toggleModal(true));
+    btnClose.addEventListener("click", () => toggleModal(false));
+    modal.addEventListener("click", (e) => { if(e.target === modal) toggleModal(false); });
+
+    // 7. Enviar Post para o Firestore
+    btnSubmit.addEventListener("click", async () => {
+        const text = postInput.value.trim();
+        if (!text) return;
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = "Publicando...";
+
+        try {
+            await addDoc(collection(db, "posts"), {
+                author: username,
+                content: text,
+                createdAt: serverTimestamp() // Usa o horário do servidor do Firebase
+            });
+            toggleModal(false);
+        } catch (error) {
+            console.error("Erro ao publicar:", error);
+            alert("Erro ao publicar. Verifique as regras do Firestore.");
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "Publicar";
+        }
+    });
+
+    // 8. Escutar Posts em Tempo Real (Realtime Feed)
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    
+    onSnapshot(q, (snapshot) => {
+        feedContainer.innerHTML = ""; // Limpa o feed
+        
+        if (snapshot.empty) {
+            feedContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Nenhum post ainda. Seja o primeiro!</p>';
+            return;
+        }
+
+        snapshot.forEach((doc) => {
+            const post = doc.data();
+            const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${post.author}`;
+            
+            // Formatação de data simples
+            let timeString = "Agora mesmo";
+            if (post.createdAt) {
+                const date = post.createdAt.toDate();
+                timeString = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' - ' + date.toLocaleDateString();
+            }
+
+            // Criação do Card (Estilo Facebook/Twitter)
+            const card = document.createElement("div");
+            card.className = "post-card";
+            card.innerHTML = `
+                <div class="post-header">
+                    <img src="${avatarUrl}" class="avatar" alt="Avatar">
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="post-author">${post.author}</span>
+                        <span class="post-time">${timeString}</span>
+                    </div>
+                </div>
+                <div class="post-content">${post.content.replace(/\n/g, '<br>')}</div>
+                <div style="border-top: 1px solid var(--border-color); padding-top: 10px; color: var(--text-muted); font-size: 14px; display: flex; gap: 5px; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3z"/></svg>
+                    Curtir
+                </div>
+            `;
+            feedContainer.appendChild(card);
+        });
+    }, (error) => {
+        console.error("Erro no onSnapshot:", error);
+        feedContainer.innerHTML = '<p style="color: #ff4d4d; text-align:center;">Erro ao carregar o feed. Verifique as permissões do Firestore.</p>';
+    });
+</script>
+</body>
+</html>
