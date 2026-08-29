@@ -3,255 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arphen Social - Ecossistema Completo</title>
+    <title>Arphen - Web Novels e Light Novels</title>
     <style>
-        /* ================= VARIÁVEIS E ESTILOS GLOBAIS ORIGINAIS ================= */
+        /* ================= VARIÁVEIS E RESET GLOBAL ================= */
         :root {
-            --bg-main: #18191a;
-            --bg-card: #242526;
-            --bg-hover: #3a3b3c;
-            --text-main: #e4e6eb;
-            --accent-white: #ffffff;
-            --accent-blue: #2374e1;
-            --drawer-bg: #2d2d2d;
-            /* Variáveis do Novo Menu (Novel Mania Style) */
-            --bg-menu-nm: #1a1d24;
-            --text-muted-nm: #9ca3af;
-            --accent-cyan-nm: #67e8f9;
-            --danger-red-nm: #ef4444;
-            --border-color-nm: #2d3748;
+            --bg-main: #15171e;
+            --bg-card: #1e212b;
+            --bg-menu: #1a1d24;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-cyan: #67e8f9;
+            --accent-blue: #3b82f6;
+            --accent-discord: #5865F2;
+            --tag-bg: #374151;
+            --border-color: #2d3748;
+            --danger-red: #ef4444;
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
-            font-family: sans-serif;
-            margin: 0; padding: 0; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
-        * { box-sizing: border-box; }
 
-        /* ================= NOVO MENU HAMBÚRGUER E LOGIN (NOVEL MANIA STYLE) ================= */
-        .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 8000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* ================= LAYOUT PRINCIPAL ================= */
+        .app-container {
+            max-width: 600px; /* Mantém o aspecto mobile perfeito no PC */
+            margin: 0 auto;
+            background-color: var(--bg-main);
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* ================= HEADER ================= */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background-color: var(--bg-main);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff; /* Letras Brancas */
+            letter-spacing: 1px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            color: var(--text-muted);
+            align-items: center;
+        }
+
+        .icon-btn { cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { color: var(--accent-cyan); }
+
+        /* ================= SEÇÕES COMUNS ================= */
+        section {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        section:last-child { border-bottom: none; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-title svg { color: var(--accent-cyan); }
+        .view-more { font-size: 14px; color: var(--text-muted); cursor: pointer; }
+        .view-more:hover { color: var(--accent-cyan); }
+
+        /* ================= DESTAQUES (HERO NOTÍCIAS) ================= */
+        .hero-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+        .hero-card img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 20px;
+        }
+        .tag-dark { background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 12px; font-size: 12px; display: inline-block; margin-bottom: 8px; }
+        .hero-title { font-size: 18px; font-weight: bold; margin-bottom: 4px; line-height: 1.3; }
+        .hero-meta { font-size: 12px; color: var(--text-muted); }
+
+        .news-list-item { margin-bottom: 16px; cursor: pointer; }
+        .news-list-item:last-child { margin-bottom: 0; }
+        .news-list-item .tag { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; display: block; }
+        .news-list-item h4 { font-size: 15px; margin-bottom: 4px; transition: color 0.2s; }
+        .news-list-item:hover h4 { color: var(--accent-cyan); }
+
+        /* ================= CARROSSÉIS HORIONTAIS ================= */
+        .carousel {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .carousel::-webkit-scrollbar { display: none; }
+
+        .book-card {
+            flex: 0 0 140px;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .book-card:hover { opacity: 0.8; }
+        .book-cover {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2/3;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .book-cover img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .tag-cyan { position: absolute; bottom: 8px; left: 8px; background: var(--accent-cyan); color: #000; font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 12px; }
+        
+        .book-title { font-size: 14px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .book-author { font-size: 12px; color: var(--text-muted); }
+
+        /* ================= LISTAS VERTICAIS ================= */
+        .list-card {
+            display: flex; gap: 16px; background: var(--bg-card);
+            padding: 12px; border-radius: 12px; margin-bottom: 12px;
+            align-items: center; cursor: pointer; transition: background 0.2s;
+        }
+        .list-card:hover { background: var(--bg-card-hover); }
+        .list-card-transparent { background: transparent; padding: 12px 0; border-bottom: 1px solid var(--border-color); border-radius: 0; margin-bottom: 0; }
+        .list-card-transparent:last-child { border-bottom: none; }
+
+        .list-cover { position: relative; width: 60px; height: 80px; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+        .list-cover img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .rank-badge { position: absolute; top: -4px; left: -4px; background: var(--accent-cyan); color: #000; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; z-index: 2; }
+        .list-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .list-title { font-size: 15px; font-weight: 600; }
+        .list-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
+        
+        .tag-outline { border: 1px solid var(--border-color); padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        .tag-solid { background: var(--tag-bg); padding: 2px 8px; border-radius: 12px; font-size: 11px; color: var(--accent-cyan); }
+
+        .read-link { font-size: 13px; color: var(--accent-cyan); font-weight: 500; margin-top: 4px; }
+        .time-right { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
+        /* ================= CAIXA CTA (APOIAR) ================= */
+        .cta-box { background: #1a202c; border-radius: 16px; padding: 24px; margin: 20px 0; }
+        .cta-subtitle { font-size: 11px; color: var(--accent-cyan); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+        .cta-title { font-size: 24px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+        .cta-text { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+        .cta-features { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; font-size: 13px; color: #e5e7eb; }
+        .cta-features span { display: flex; align-items: center; gap: 6px; }
+        
+        .btn-primary { display: block; width: 100%; text-align: center; background: #ffffff; color: #000000; padding: 14px; border-radius: 24px; font-weight: bold; font-size: 15px; cursor: pointer; border: none; transition: opacity 0.2s; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-primary.blue { background: var(--accent-blue); color: white; }
+
+        /* ================= TAGS DE GÊNEROS ================= */
+        .genre-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .genre-tag { background: transparent; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+        .genre-tag:hover { background: var(--bg-card); color: white; border-color: var(--text-muted); }
+
+        /* ================= FOOTER ================= */
+        .footer { padding: 30px 20px; background: #111318; border-top: 1px solid var(--border-color); }
+        .footer-logo { font-size: 16px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px;}
+        .footer-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+        .footer-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+        .footer-links a { font-size: 14px; font-weight: 500; color: var(--text-main); }
+        .footer-links a:hover { color: var(--accent-cyan); }
+        .footer-bottom { font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+
+
+        /* ==================== MENU LATERAL (HAMBÚRGUER) ==================== */
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .menu-overlay.active { opacity: 1; pointer-events: all; }
         
-        .side-menu { position: fixed; top: 0; right: -320px; width: 85%; max-width: 320px; height: 100vh; background-color: var(--bg-menu-nm); z-index: 8001; transition: right 0.3s ease; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.5); overflow-y: auto; }
+        .side-menu { position: fixed; top: 0; right: -320px; width: 85%; max-width: 320px; height: 100vh; background-color: var(--bg-menu); z-index: 101; transition: right 0.3s ease; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.5); overflow-y: auto; }
         .side-menu.open { right: 0; }
 
-        .menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color-nm); }
-        .menu-header h2 { font-size: 18px; font-weight: 800; letter-spacing: 1px; color: #fff; margin: 0; }
-        .close-menu-btn { background: var(--bg-card); border: none; color: var(--text-muted-nm); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color); }
+        .menu-header h2 { font-size: 18px; font-weight: 800; letter-spacing: 1px; color: #fff; }
+        .close-menu-btn { background: var(--bg-card); border: none; color: var(--text-muted); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .close-menu-btn:hover { background: var(--bg-card-hover); color: white; }
 
         .menu-content { padding: 20px; display: flex; flex-direction: column; gap: 24px; }
-        .menu-section-title { font-size: 11px; color: var(--text-muted-nm); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+        .menu-section-title { font-size: 11px; color: var(--text-muted); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
         
         .menu-item { display: flex; align-items: center; gap: 16px; padding: 12px 16px; color: var(--text-main); font-size: 15px; font-weight: 500; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
         .menu-item:hover { background-color: var(--bg-card); }
-        .menu-item.active { background-color: rgba(103, 232, 249, 0.1); color: var(--accent-cyan-nm); }
-        .menu-item.active svg { stroke: var(--accent-cyan-nm); }
-        .menu-item svg { color: var(--text-muted-nm); }
-        .menu-item.text-red { color: var(--danger-red-nm); }
-        .menu-item.text-red svg { color: var(--danger-red-nm); }
+        .menu-item.active { background-color: rgba(103, 232, 249, 0.1); color: var(--accent-cyan); }
+        .menu-item.active svg { stroke: var(--accent-cyan); }
+        .menu-item svg { color: var(--text-muted); }
+        
+        .menu-item.text-red { color: var(--danger-red); }
+        .menu-item.text-red svg { color: var(--danger-red); }
 
-        .login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-main); z-index: 9000; display: none; flex-direction: column; align-items: center; padding: 40px 20px; overflow-y: auto; }
+        /* ==================== TELA DE LOGIN ==================== */
+        .login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-main); z-index: 200; display: none; flex-direction: column; align-items: center; padding: 40px 20px; overflow-y: auto; }
         .login-screen.active { display: flex; }
-        .login-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--text-muted-nm); }
+        .login-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--text-muted); padding: 5px; }
+        
         .login-logo { margin-bottom: 40px; margin-top: 20px; color: white; }
         .login-form { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 16px; }
-        .input-group input { width: 100%; background: transparent; border: 1px solid var(--border-color-nm); border-radius: 8px; padding: 16px; color: white; font-size: 15px; outline: none; transition: border 0.2s; }
-        .input-group input:focus { border-color: var(--accent-blue); }
-        .btn-login { background: #5ab4d8; color: #000; font-weight: bold; border: none; padding: 16px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 8px; }
-        .divider { display: flex; align-items: center; text-align: center; color: var(--text-muted-nm); font-size: 12px; margin: 10px 0; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color-nm); }
+        
+        .input-group input { width: 100%; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; color: white; font-size: 15px; outline: none; transition: border 0.2s; }
+        .input-group input:focus { border-color: var(--accent-cyan); }
+        
+        .btn-login { background: #5ab4d8; color: #000; font-weight: bold; border: none; padding: 16px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 8px; transition: opacity 0.2s; }
+        .btn-login:hover { opacity: 0.9; }
+        
+        .divider { display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 12px; margin: 10px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
         .divider:not(:empty)::before { margin-right: .25em; }
         .divider:not(:empty)::after { margin-left: .25em; }
-        .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; border: none; color: white; }
-        .btn-discord { background-color: #5865F2; }
+
+        .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; border: none; color: white; transition: opacity 0.2s; }
+        .btn-social:hover { opacity: 0.9; }
+        .btn-discord { background-color: var(--accent-discord); }
         .btn-google { background-color: #2a2e39; }
+
         .login-links { margin-top: 20px; display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 400px; }
-        .login-link-item { display: flex; justify-content: space-between; color: var(--text-muted-nm); font-size: 14px; cursor: pointer; padding-bottom: 16px; border-bottom: 1px solid var(--border-color-nm); }
+        .login-link-item { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 14px; cursor: pointer; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+        .login-link-item:hover { color: white; }
 
-        /* ================= ESTILOS ORIGINAIS DO APP (FEED, CHAT, REELS, ETC) ================= */
-        .header { background-color: var(--bg-card); display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #3e4042; position: sticky; top: 0; z-index: 1000; }
-        .header-left, .header-right { display: flex; flex-direction: row; align-items: center; }
-        .logo { color: var(--accent-white); font-weight: bold; font-size: 24px; cursor: pointer; }
-        .header-icon { cursor: pointer; padding: 8px; border-radius: 50%; transition: background-color 0.2s; margin-left: 10px; display: flex; align-items: center; justify-content: center; }
-        .header-icon:hover { background-color: var(--bg-hover); }
-        .header-icon svg { width: 24px; height: 24px; fill: var(--accent-white); }
-        
-        .main-nav { display: flex; justify-content: space-around; padding: 10px 0; background-color: var(--bg-card); border-bottom: 1px solid #3e4042; margin-bottom: 20px; }
-        .main-nav-item { cursor: pointer; padding: 8px; border-radius: 8px; transition: background-color 0.2s; position: relative; }
-        .main-nav-item:hover { background-color: var(--bg-hover); }
-        .main-nav-item svg { width: 28px; height: 28px; fill: var(--accent-blue); }
-        .nav-badge { position: absolute; top: -2px; right: -4px; background-color: #e41e3f; color: white; font-size: 11px; font-weight: bold; border-radius: 10px; padding: 1px 5px; border: 2px solid var(--bg-card); display: flex; align-items: center; justify-content: center; z-index: 10; }
-
-        .main-container { max-width: 500px; margin: 0 auto; padding: 0 10px; }
-        
-        .create-post-area { display: flex; align-items: center; padding: 15px; background-color: var(--bg-card); border-radius: 8px; margin-bottom: 20px; }
-        .create-post-area .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; }
-        .create-post-area .post-input-wrapper { flex-grow: 1; margin-right: 10px; }
-        .create-post-area .post-input { width: 100%; background: var(--bg-hover); border: none; color: var(--text-main); height: 40px; border-radius: 20px; padding: 10px 15px; box-sizing: border-box; font-size: 16px; outline: none; }
-        
-        .post-card { background-color: var(--bg-card); border-radius: 8px; padding: 15px; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
-        .post-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; }
-        .post-meta-left { display: flex; align-items: center; gap: 10px; }
-        .post-options-btn { background: transparent; border: none; color: #b0b3b8; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .post-footer-actions { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #2f3031; margin-top: 12px; }
-        .post-action-btn { background: transparent; border: none; color: #b0b3b8; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; padding: 6px 14px; border-radius: 20px; }
-        .post-action-btn:hover { background-color: #3a3b3c; color: white; }
-
-        /* Stories */
-        .stories-container { width: 100%; max-width: 500px; margin: 0 auto 20px auto; padding: 0 10px; box-sizing: border-box; }
-        .stories-wrapper { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
-        .stories-wrapper::-webkit-scrollbar { display: none; }
-        .story-card { position: relative; width: 110px; height: 180px; background-color: #1e1f20; border-radius: 12px; flex-shrink: 0; overflow: hidden; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; justify-content: flex-end; }
-        .story-card img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.65; }
-        .story-card span { position: relative; z-index: 2; color: #ffffff; font-size: 13px; font-weight: 600; margin: 0 0 10px 10px; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9); }
-
-        /* Chat e WebRTC */
-        #chat-list-container, #chat-container, #reels-container, #profile-container, #notifications-container { display: none; max-width: 500px; margin: 0 auto; }
-        .chat-row { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #3e4042; cursor: pointer; }
-        .chat-row:hover { background-color: var(--bg-hover); }
-        .chat-row-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
-        .chat-row-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .chat-row-name { font-size: 16px; font-weight: bold; color: #ffffff; margin: 0; }
-        
-        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; height: 70vh; }
-        .msg-wrapper { display: flex; flex-direction: column; max-width: 75%; }
-        .msg-wrapper.sent { align-self: flex-end; align-items: flex-end; }
-        .msg-wrapper.received { align-self: flex-start; align-items: flex-start; }
-        .msg-bubble { padding: 10px 14px; border-radius: 18px; color: #e9edef; font-size: 15px; line-height: 1.4; word-break: break-word; }
-        .msg-bubble.sent { background-color: #005c4b; border-bottom-right-radius: 4px; }
-        .msg-bubble.received { background-color: #202c33; border-bottom-left-radius: 4px; }
-
-        /* Modais e Drawers Originais */
-        .post-drawer-animated { position: fixed; bottom: -100%; left: 0; width: 100%; background: #18191a; border-radius: 15px 15px 0 0; z-index: 4500; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); padding: 20px; box-sizing: border-box; color: white; transition: bottom 0.3s ease-in-out; }
-        .drawer-option-item { display: flex; align-items: center; gap: 15px; padding: 14px 4px; cursor: pointer; border-bottom: 1px solid #242526; }
-        .drawer-option-item svg { width: 22px; height: 22px; fill: #b0b3b8; }
     </style>
 </head>
 <body>
 
-<!-- ================= HEADER PRINCIPAL ================= -->
-<header class="header">
-    <div class="logo" id="logo-link">Arphen</div>
-    <div class="header-right">
-        <div class="header-icon" id="search-icon">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        </div>
-        <div class="header-icon" id="menu-hamburguer-icon">
-            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-        </div>
-    </div>
-</header>
-
-<!-- ================= NAVEGAÇÃO PRINCIPAL ================= -->
-<nav class="main-nav">
-    <div class="main-nav-item" id="home-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
-    <div class="main-nav-item" id="friends-icon"><svg viewBox="0 0 24 24" style="fill: none; stroke: var(--accent-white); stroke-width: 2.2px;"><circle cx="15.5" cy="5.5" r="2.5" /><path d="M12.5 11.5c1.2-.7 2.3-.7 3.5-.7 2 0 3.5 1.2 3.5 3v0c0 .8-.7 1.5-1.5 1.5H15" /><circle cx="8.5" cy="8.5" r="2.5" /><path d="M3.5 17.5c0-1.8 1.5-3 3.5-3h3c2 0 3.5 1.2 3.5 3v0c0 .8-.7 1.5-1.5 1.5h-7c-.8 0-1.5-.7-1.5-1.5z" /></svg></div>
-    <div class="main-nav-item" id="messages-icon"><svg viewBox="0 0 24 24" style="fill: none; stroke: var(--accent-white); stroke-width: 2.3px;"><path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/></svg></div>
-    <div class="main-nav-item" id="reels-nav-icon"><svg viewBox="0 0 24 24" style="fill: none; stroke: var(--accent-white); stroke-width: 2px;"><rect x="2" y="2" width="20" height="20" rx="5"></rect><polygon points="10,11 15,14 10,17" style="fill: var(--accent-blue); stroke: none;"></polygon></svg></div>
-</nav>
-
-<!-- ================= CONTAINER PRINCIPAL (FEED) ================= -->
-<div id="app-container">
-    <main class="main-container">
-        
-        <!-- STORIES -->
-        <div class="stories-container">
-            <div class="stories-wrapper" id="stories-list">
-                <div class="story-card" id="btn-open-story-modal">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Arphen" id="user-story-avatar" alt="Minha Foto">
-                    <span style="position: absolute; bottom: 10px; left: 10px; z-index: 10;">Criar story</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- CRIAR POST -->
-        <section id="create-post-container" class="create-post-area">
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Arphen" alt="Avatar" class="user-avatar" id="post-area-avatar">
-            <div class="post-input-wrapper">
-                <input type="text" id="post-text" class="post-input" placeholder="No que você está pensando?">
-            </div>
-            <div id="btn-abrir-modal-foto" style="cursor: pointer; color: #45bd62; display: flex; flex-direction: column; align-items: center; font-size: 12px;">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/></svg>
-                Foto
-            </div>
-        </section>
-
-        <!-- FEED LIST -->
-        <section id="feed">
-            <p style="text-align: center; color: var(--text-muted-nm);">Carregando publicações...</p>
-        </section>
-    </main>
-</div>
-
-<!-- ================= OUTRAS TELAS (OCULTAS POR PADRÃO) ================= -->
-<section id="chat-list-container">
-    <h2 style="padding: 20px; margin: 0;">Mensagens</h2>
-    <div id="conversations-list-wrapper"></div>
-</section>
-
-<section id="chat-container">
-    <div class="header" style="background: #202c33;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="btn-voltar-chat" style="cursor: pointer; font-size: 24px;">&larr;</span>
-            <img src="" id="chat-current-avatar" style="width: 40px; height: 40px; border-radius: 50%;">
-            <h4 id="chat-current-user-name" style="margin: 0;">Usuário</h4>
-        </div>
-    </div>
-    <div class="chat-messages" id="chat-messages-wrapper"></div>
-    <div style="display: flex; padding: 10px; background: #1e212b;">
-        <input type="text" id="chat-message-input-unique" placeholder="Mensagem..." style="flex: 1; padding: 10px; border-radius: 20px; border: none; background: #3a3b3c; color: white; outline: none;">
-        <button id="btn-send-message" style="background: none; border: none; color: var(--accent-blue); font-weight: bold; padding: 0 15px; cursor: pointer;">Enviar</button>
-    </div>
-</section>
-
-<section id="profile-container">
-    <div style="height: 200px; background: #3a3b3c; position: relative;">
-        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Arphen" id="p-avatar-img" style="width: 120px; height: 120px; border-radius: 50%; position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); border: 4px solid var(--bg-main); background: var(--bg-card);">
-    </div>
-    <div style="text-align: center; margin-top: 70px;">
-        <h2 id="p-user-title">Usuário</h2>
-        <p id="p-user-bio" style="color: var(--text-muted-nm); font-size: 14px;">Biografia...</p>
-    </div>
-    <div id="profile-posts-list" style="margin-top: 20px; padding: 10px;"></div>
-</section>
-
-<!-- ================= MENU LATERAL (NOVEL MANIA STYLE) ================= -->
+<!-- GAVETA (MENU LATERAL) & OVERLAY -->
 <div class="menu-overlay" id="menu-overlay"></div>
 <div class="side-menu" id="side-menu">
     <div class="menu-header">
-        <h2>ARPHEN</h2>
+        <h2>NOVELMANIA</h2>
         <button class="close-menu-btn" id="btn-close-menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
     </div>
     
     <div class="menu-content">
+        <!-- BLOCO FIXO: NAVEGAÇÃO -->
         <div>
             <div class="menu-section-title">NAVEGAÇÃO</div>
-            <div class="menu-item active" id="menu-btn-home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Início</div>
+            <div class="menu-item active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Início</div>
             <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> Encontrar novels</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Listas</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Editoria</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Postagens</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Contato</div>
         </div>
 
-        <!-- BLOCO DESLOGADO -->
+        <!-- BLOCO DESLOGADO (Aparece se auth = null) -->
         <div id="menu-logged-out">
-            <div class="menu-item" id="btn-open-login" style="border: 1px solid var(--border-color-nm); justify-content: center; margin-top: 10px;">
+            <div class="menu-item" id="btn-open-login" style="border: 1px solid var(--border-color); justify-content: center; margin-top: 10px;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 Entrar
             </div>
         </div>
 
-        <!-- BLOCO LOGADO -->
+        <!-- BLOCO LOGADO (Aparece se auth tiver user) -->
         <div id="menu-logged-in" style="display: none;">
             <div class="menu-section-title">MINHA CONTA</div>
-            <div class="menu-item" id="menu-btn-profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Meu perfil</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Meu perfil <span id="user-display" style="font-size:12px; color:var(--accent-cyan); margin-left:auto;"></span></div>
             <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Favoritos</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Notificações</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Minhas listas</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Configurações</div>
             <div class="menu-item text-red" id="btn-logout"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sair</div>
+        </div>
+
+        <!-- APARÊNCIA E SOCIAL (Fica sempre visível no final) -->
+        <div>
+            <div class="menu-section-title">APARÊNCIA</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Sistema</div>
+        </div>
+        <div>
+            <div class="menu-section-title">SOCIAL</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Discord</div>
+            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg> Facebook</div>
         </div>
     </div>
 </div>
 
-<!-- ================= TELA DE LOGIN (NOVEL MANIA STYLE) ================= -->
+<!-- ================= TELA OVERLAY DE LOGIN ================= -->
 <div class="login-screen" id="login-screen">
     <div class="login-close" id="btn-close-login">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -272,35 +350,340 @@
         
         <div class="divider">ou</div>
         
-        <button class="btn-social btn-discord"><span>D</span> Entrar com Discord</button>
-        <button class="btn-social btn-google"><span>G</span> Entrar com Google</button>
+        <button class="btn-social btn-discord">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> Entrar com Discord
+        </button>
+        <button class="btn-social btn-google">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.16v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.16C1.43 8.55 1 10.22 1 12s.43 3.45 1.16 4.93l3.68-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.16 7.07l3.68 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Entrar com Google
+        </button>
     </div>
 
     <div class="login-links">
         <div class="login-link-item" id="btn-create-account">
-            <span>Criar conta</span><span>&rarr;</span>
+            <span>Criar conta</span>
+            <span>&rarr;</span>
+        </div>
+        <div class="login-link-item">
+            <span>Esqueci a senha</span>
+            <span>&rarr;</span>
         </div>
     </div>
 </div>
 
-<!-- ================= MODAL DE POSTAGEM DE FOTO ================= -->
-<div id="foto-modal" class="post-drawer-animated" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-            <h3 style="margin: 0;">Publicar Foto</h3>
-            <span id="btn-fechar-modal-foto" style="cursor: pointer; font-size: 20px;">&times;</span>
+<div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+            Arphen
         </div>
-        <input type="text" id="foto-link-input" placeholder="Cole o link da imagem aqui" style="width: 100%; padding: 10px; margin-bottom: 10px; background: var(--bg-hover); border: none; color: white; border-radius: 6px;">
-        <textarea id="foto-text-input" placeholder="Escreva uma legenda..." style="width: 100%; padding: 10px; height: 80px; background: var(--bg-hover); border: none; color: white; border-radius: 6px; resize: none;"></textarea>
-        <button id="btn-publicar-foto" style="width: 100%; padding: 12px; background: #45bd62; color: white; border: none; border-radius: 6px; font-weight: bold; margin-top: 10px; cursor: pointer;">Publicar</button>
-    </div>
+        <div class="header-icons">
+            <div class="icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+            <!-- Botão Hambúrguer Oficial -->
+            <div class="icon-btn" id="btn-open-menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+        </div>
+    </header>
+
+    <!-- NOTÍCIAS (HERO) -->
+    <section>
+        <div class="section-header">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>
+                Notícias
+            </div>
+            <div class="view-more">Ver mais ></div>
+        </div>
+
+        <div class="hero-card">
+            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=600&auto=format&fit=crop" alt="Notícia Principal">
+            <div class="hero-overlay">
+                <span class="tag-dark">Anúncios</span>
+                <div class="hero-title">Volume 1: Pré-Venda Oficial e Retirada do Volume do Ar</div>
+                <div class="hero-meta">KlayLuz • 16 de jun. de 2026</div>
+            </div>
+        </div>
+
+        <div class="news-list-item">
+            <span class="tag">Anúncios</span>
+            <h4>A Nova Era da Arphen: Conheça a Nossa Nova Plataforma!</h4>
+            <div class="hero-meta">Pumpkin • 08 de jun. de 2026</div>
+        </div>
+        <div style="height: 1px; background: var(--border-color); margin: 16px 0;"></div>
+        <div class="news-list-item">
+            <span class="tag">Anúncios</span>
+            <h4>A Filha da Madastra é Minha Ex está de volta!</h4>
+            <div class="hero-meta">KlayLuz • 22 de abr. de 2026</div>
+        </div>
+    </section>
+
+    <!-- NOVIDADES (CARROSSEL COM CAPAS DAS SUAS IMAGENS) -->
+    <section>
+        <div class="section-header">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                Novidades
+            </div>
+        </div>
+        <div class="carousel drag-scroll">
+            <div class="book-card">
+                <div class="book-cover">
+                    <!-- Referência exata às imagens enviadas -->
+                    <img src="https://images.unsplash.com/photo-1544465544-1b71aee9dfa3?q=80&w=300&auto=format&fit=crop" alt="Capa">
+                    <span class="tag-cyan">Original</span>
+                </div>
+                <div class="book-title">O que eu deixei para trás?</div>
+                <div class="book-author">LouizPz e Gliy</div>
+            </div>
+            <div class="book-card">
+                <div class="book-cover">
+                    <img src="https://images.unsplash.com/photo-1613143360408-cf5fc77bd365?q=80&w=300&auto=format&fit=crop" alt="Capa">
+                    <span class="tag-cyan" style="background: #93c5fd;">Light Novel</span>
+                </div>
+                <div class="book-title">Parece que a Takane-san Gosta de Você</div>
+                <div class="book-author">Kazami Sawatari</div>
+            </div>
+            <div class="book-card">
+                <div class="book-cover">
+                    <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=300&auto=format&fit=crop" alt="Capa">
+                    <span class="tag-cyan">Webnovel</span>
+                </div>
+                <div class="book-title">Alya às Vezes Esconde Seus Sentimentos</div>
+                <div class="book-author">Sunsun Sun</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- POPULARES (LISTA) -->
+    <section>
+        <div class="section-header">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                Populares
+            </div>
+            <div class="view-more">Ver mais ></div>
+        </div>
+
+        <div class="list-card">
+            <div class="list-cover">
+                <div class="rank-badge">1</div>
+                <img src="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=150&auto=format&fit=crop" alt="Capa">
+            </div>
+            <div class="list-info">
+                <div class="list-title">Contra os Deuses</div>
+                <div class="list-meta">Mars Gravity</div>
+                <div class="list-meta">
+                    <span class="tag-outline">Webnovel</span>
+                    <span class="tag-outline">CN</span>
+                </div>
+                <div class="read-link">Ler &rarr;</div>
+            </div>
+        </div>
+
+        <div class="list-card">
+            <div class="list-cover">
+                <div class="rank-badge" style="background: #93c5fd;">2</div>
+                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=150&auto=format&fit=crop" alt="Capa">
+            </div>
+            <div class="list-info">
+                <div class="list-title">Imortal Renegado</div>
+                <div class="list-meta">Er Gen</div>
+                <div class="list-meta">
+                    <span class="tag-outline">Webnovel</span>
+                    <span class="tag-outline">CN</span>
+                </div>
+                <div class="read-link">Ler &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="list-card">
+            <div class="list-cover">
+                <div class="rank-badge" style="background: #9ca3af;">3</div>
+                <img src="https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?q=80&w=150&auto=format&fit=crop" alt="Capa">
+            </div>
+            <div class="list-info">
+                <div class="list-title">Deus Marcial Asura</div>
+                <div class="list-meta">Kindhearted Bee</div>
+                <div class="list-meta">
+                    <span class="tag-outline">Webnovel</span>
+                    <span class="tag-outline">CN</span>
+                </div>
+                <div class="read-link">Ler &rarr;</div>
+            </div>
+        </div>
+        
+        <div class="list-card">
+            <div class="list-cover">
+                <div class="rank-badge" style="background: #f3f4f6;">4</div>
+                <img src="https://images.unsplash.com/photo-1542382156909-92bd46ea95d2?q=80&w=150&auto=format&fit=crop" alt="Capa">
+            </div>
+            <div class="list-info">
+                <div class="list-title">Super Gene</div>
+                <div class="list-meta">Twelve-winged Dark Seraphim</div>
+                <div class="list-meta">
+                    <span class="tag-outline">Webnovel</span>
+                    <span class="tag-outline">CN</span>
+                </div>
+                <div class="read-link">Ler &rarr;</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ORIGINAIS -->
+    <section>
+        <div class="section-header">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Originais Arphen
+            </div>
+            <div class="view-more">Ver mais ></div>
+        </div>
+        <div class="carousel drag-scroll">
+            <div class="book-card" style="flex: 0 0 180px;">
+                <div class="book-cover">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=300&auto=format&fit=crop" alt="Capa">
+                    <span class="tag-cyan">Original</span>
+                </div>
+                <div class="book-title">Arbidabliu: Relíquia de Um Sangue...</div>
+                <div class="book-author">Magnus R. S. Alexandrino</div>
+            </div>
+            <div class="book-card" style="flex: 0 0 180px;">
+                <div class="book-cover">
+                    <img src="https://images.unsplash.com/photo-1447958374760-1ce70cf11ee3?q=80&w=300&auto=format&fit=crop" alt="Capa">
+                    <span class="tag-cyan">Original</span>
+                </div>
+                <div class="book-title">A Odisseia do Príncipe Perdido</div>
+                <div class="book-author">Leonardo Carneiro</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA AUTORES -->
+    <section>
+        <div class="cta-box">
+            <div class="cta-subtitle">PARA AUTORES</div>
+            <div class="cta-title">Mande também a sua novel!</div>
+            <div class="cta-text">Você tem uma obra em andamento? A Arphen abre espaço para autores brasileiros publicarem seus trabalhos de ficção. Nossa equipe editorial oferece suporte, revisão e divulgação.</div>
+            <button class="btn-primary">Saiba como</button>
+        </div>
+    </section>
+
+    <!-- ÚLTIMOS LANÇAMENTOS -->
+    <section>
+        <div class="section-header">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                Últimos Lançamentos
+            </div>
+            <div class="view-more">Ver mais ></div>
+        </div>
+
+        <div class="list-card-transparent">
+            <div class="list-cover" style="width: 50px; height: 70px;">
+                <img src="https://images.unsplash.com/photo-1542382156909-92bd46ea95d2?q=80&w=150&auto=format&fit=crop" alt="Capa">
+            </div>
+            <div class="list-info">
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="list-title">Super Gene</div>
+                    <div class="time-right">há 1 hora</div>
+                </div>
+                <div class="list-meta" style="color: var(--accent-blue);">Volume 10 – Capítulo 927</div>
+                <div><span class="tag-solid">2 capítulos</span></div>
+            </div>
+        </div>
+
+        <div class="list-card-transparent">
+            <div class="list-cover" style="width: 50px; height: 70px;">
+                <img src="https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?q=80&w=150&auto=format&fit=crop" alt="Capa">
+            </div>
+            <div class="list-info">
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="list-title">O que eu deixei para trás?</div>
+                    <div class="time-right">há 3 horas</div>
+                </div>
+                <div class="list-meta" style="color: #ef4444;">‼️ Informativo ‼️ – Sistema...</div>
+                <div><span class="tag-solid">2 capítulos</span></div>
+            </div>
+        </div>
+        
+        <div class="list-card-transparent">
+            <div class="list-cover" style="width: 50px; height: 70px;">
+                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=150&auto=format&fit=crop" alt="Capa">
+            </div>
+            <div class="list-info">
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="list-title">Ressonância Absoluta</div>
+                    <div class="time-right">há 8 horas</div>
+                </div>
+                <div class="list-meta" style="color: var(--accent-blue);">Volume 2 – Capítulo 128</div>
+                <div><span class="tag-solid">2 capítulos</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GÊNEROS -->
+    <section>
+        <div class="section-header">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                Explorar por Gênero
+            </div>
+        </div>
+        <div class="genre-tags">
+            <span class="genre-tag">Sobrenatural</span>
+            <span class="genre-tag">Super-Herói</span>
+            <span class="genre-tag">Ação</span>
+            <span class="genre-tag">Conto</span>
+            <span class="genre-tag">Psicológico</span>
+            <span class="genre-tag">Cotidiano</span>
+        </div>
+    </section>
+
+    <!-- CTA APOIE -->
+    <section>
+        <div class="cta-box">
+            <div class="cta-subtitle">APOIE A ARPHEN</div>
+            <div class="cta-title">Ajude-nos a crescer juntos</div>
+            <div class="cta-text">Suas doações mantêm a Arphen no ar, sem anúncios invasivos, e ajudam toda a comunidade de leitores e autores a crescer.</div>
+            <div class="cta-features">
+                <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Novas traduções</span>
+                <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Novels originais</span>
+                <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Sem anúncios</span>
+            </div>
+            <button class="btn-primary blue">♡ Doar agora</button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-logo">ARPHEN</div>
+        <div class="footer-desc">Light novels e web novels em português.</div>
+        <div class="footer-links">
+            <a href="#">Novels</a>
+            <a href="#">Listas</a>
+            <a href="#">Notícias</a>
+            <a href="#">Editoria</a>
+            <a href="#">Sobre</a>
+            <a href="#">Contato</a>
+            <a href="#">Privacidade</a>
+            <a href="#">Cookies</a>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 Arphen. Todos os direitos reservados.</span>
+            <div style="display: flex; gap: 10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </div>
+        </div>
+    </footer>
+
 </div>
 
-<!-- ================= JAVASCRIPT E FIREBASE ================= -->
+<!-- ================= JAVASCRIPT ================= -->
 <script type="module">
+    // Importações e Config do Firebase (Exatamente igual ao requisitado)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDT4HGQrb01P7cyJzd3hQ8kjg-EZGBEB1s",
@@ -313,10 +696,11 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    // ================= CONTROLE DO MENU E LOGIN =================
-    const btnOpenMenu = document.getElementById('menu-hamburguer-icon');
+    // ==========================================
+    // CONTROLE DE DOM: MENU HAMBÚRGUER E LOGIN
+    // ==========================================
+    const btnOpenMenu = document.getElementById('btn-open-menu');
     const btnCloseMenu = document.getElementById('btn-close-menu');
     const sideMenu = document.getElementById('side-menu');
     const menuOverlay = document.getElementById('menu-overlay');
@@ -333,184 +717,122 @@
     
     const menuLoggedOut = document.getElementById('menu-logged-out');
     const menuLoggedIn = document.getElementById('menu-logged-in');
+    const userDisplay = document.getElementById('user-display');
 
+    // Funções do Menu Lateral (Desliza da Direita para Esquerda)
     const toggleMenu = (show) => {
-        if (show) { sideMenu.classList.add('open'); menuOverlay.classList.add('active'); } 
-        else { sideMenu.classList.remove('open'); menuOverlay.classList.remove('active'); }
+        if (show) {
+            sideMenu.classList.add('open');
+            menuOverlay.classList.add('active');
+        } else {
+            sideMenu.classList.remove('open');
+            menuOverlay.classList.remove('active');
+        }
     };
     btnOpenMenu.addEventListener('click', () => toggleMenu(true));
     btnCloseMenu.addEventListener('click', () => toggleMenu(false));
     menuOverlay.addEventListener('click', () => toggleMenu(false));
 
+    // Funções da Tela Overlay de Login
     const toggleLogin = (show) => {
-        if (show) { loginScreen.classList.add('active'); toggleMenu(false); } 
-        else { loginScreen.classList.remove('active'); emailInput.value = ''; passwordInput.value = ''; }
+        if (show) {
+            loginScreen.classList.add('active');
+            toggleMenu(false); // Esconde o menu se abrir a tela de login
+        } else {
+            loginScreen.classList.remove('active');
+            emailInput.value = '';
+            passwordInput.value = '';
+        }
     };
     btnOpenLogin.addEventListener('click', () => toggleLogin(true));
     btnCloseLogin.addEventListener('click', () => toggleLogin(false));
 
-    // ================= ESTADO DE AUTENTICAÇÃO =================
+    // Monitor do estado do Usuário no Firebase
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            // Usuario está logado -> Esconde a caixa "Entrar", Mostra "Meu Perfil / Sair"
             menuLoggedOut.style.display = 'none';
             menuLoggedIn.style.display = 'block';
+            if(userDisplay) {
+                // Coloca o email até o '@' na barrinha de nome (opcional mas bonito)
+                userDisplay.textContent = user.email.split('@')[0];
+            }
             toggleLogin(false);
-            
-            // Atualiza avatares com o email do usuário
-            const username = user.email.split('@')[0];
-            const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
-            document.getElementById('post-area-avatar').src = avatarUrl;
-            document.getElementById('user-story-avatar').src = avatarUrl;
         } else {
+            // Usuario NÃO logado
             menuLoggedOut.style.display = 'block';
             menuLoggedIn.style.display = 'none';
-            
-            // Avatar padrão deslogado
-            document.getElementById('post-area-avatar').src = "https://api.dicebear.com/7.x/bottts/svg?seed=Arphen";
         }
     });
 
+    // Funções de clique no Auth
     btnDoLogin.addEventListener('click', () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
-        if (!email || !password) return alert("Preencha e-mail e senha.");
+        if (!email || !password) return alert("Por favor, preencha o e-mail e a senha.");
+        
         btnDoLogin.innerText = "Aguarde...";
         signInWithEmailAndPassword(auth, email, password)
-            .then(() => { btnDoLogin.innerText = "Entrar"; })
-            .catch((error) => { btnDoLogin.innerText = "Entrar"; alert("Erro: " + error.message); });
+            .then(() => {
+                btnDoLogin.innerText = "Entrar";
+                alert("Login efetuado com sucesso!");
+            })
+            .catch((error) => {
+                btnDoLogin.innerText = "Entrar";
+                alert("Erro ao efetuar o login: " + error.message);
+            });
     });
 
     btnCreateAccount.addEventListener('click', () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
-        if (!email || !password) return alert("Preencha e-mail e senha para criar a conta.");
+        if (!email || !password) return alert("Para criar uma conta, insira o e-mail e a senha desejada nos campos.");
+        
         createUserWithEmailAndPassword(auth, email, password)
-            .then(() => alert("Conta criada com sucesso!"))
-            .catch((error) => alert("Erro: " + error.message));
+            .then(() => alert("Conta criada com perfeição! Você já está logado."))
+            .catch((error) => alert("Houve um erro na criação da conta: " + error.message));
     });
 
     btnLogout.addEventListener('click', () => {
-        signOut(auth).then(() => { alert("Você saiu da conta."); toggleMenu(false); });
-    });
-
-    // ================= NAVEGAÇÃO ENTRE TELAS =================
-    const telas = ['app-container', 'chat-list-container', 'chat-container', 'profile-container'];
-    const esconderTelas = () => telas.forEach(id => document.getElementById(id).style.display = 'none');
-
-    document.getElementById('home-icon').addEventListener('click', () => { esconderTelas(); document.getElementById('app-container').style.display = 'block'; });
-    document.getElementById('menu-btn-home').addEventListener('click', () => { esconderTelas(); document.getElementById('app-container').style.display = 'block'; toggleMenu(false); });
-    document.getElementById('messages-icon').addEventListener('click', () => { esconderTelas(); document.getElementById('chat-list-container').style.display = 'block'; });
-    document.getElementById('menu-btn-profile').addEventListener('click', () => { 
-        if(!auth.currentUser) return alert("Faça login primeiro!");
-        esconderTelas(); 
-        document.getElementById('profile-container').style.display = 'block'; 
-        document.getElementById('p-user-title').innerText = auth.currentUser.email.split('@')[0];
-        document.getElementById('p-avatar-img').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${auth.currentUser.email.split('@')[0]}`;
-        toggleMenu(false); 
-    });
-
-    // ================= LÓGICA DE POSTAGEM (FEED) =================
-    const postTextInput = document.getElementById('post-text');
-    const fotoModal = document.getElementById('foto-modal');
-    const btnAbrirModalFoto = document.getElementById('btn-abrir-modal-foto');
-    const btnFecharModalFoto = document.getElementById('btn-fechar-modal-foto');
-    const btnPublicarFoto = document.getElementById('btn-publicar-foto');
-    const fotoLinkInput = document.getElementById('foto-link-input');
-    const fotoTextInput = document.getElementById('foto-text-input');
-
-    // Verifica login ao tentar postar texto
-    postTextInput.addEventListener('click', () => {
-        if (!auth.currentUser) {
-            alert("Você precisa entrar na sua conta para postar!");
-            toggleLogin(true);
-        }
-    });
-
-    postTextInput.addEventListener('keypress', async (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if (!auth.currentUser) return;
-            const text = postTextInput.value.trim();
-            if (!text) return;
-
-            try {
-                await addDoc(collection(db, "posts"), {
-                    autor: auth.currentUser.email,
-                    text: text,
-                    video: "",
-                    createdAt: serverTimestamp()
-                });
-                postTextInput.value = '';
-            } catch (error) { console.error(error); }
-        }
-    });
-
-    // Modal de Foto
-    btnAbrirModalFoto.addEventListener('click', () => {
-        if (!auth.currentUser) { alert("Faça login para postar fotos!"); toggleLogin(true); return; }
-        fotoModal.style.display = 'flex';
-    });
-    btnFecharModalFoto.addEventListener('click', () => fotoModal.style.display = 'none');
-
-    btnPublicarFoto.addEventListener('click', async () => {
-        const link = fotoLinkInput.value.trim();
-        const text = fotoTextInput.value.trim();
-        if (!link) return alert("Cole um link de imagem!");
-
-        try {
-            await addDoc(collection(db, "posts"), {
-                autor: auth.currentUser.email,
-                text: text,
-                video: link, // Usando o campo video para armazenar a mídia (como no original)
-                createdAt: serverTimestamp()
-            });
-            fotoLinkInput.value = ''; fotoTextInput.value = '';
-            fotoModal.style.display = 'none';
-        } catch (error) { console.error(error); }
-    });
-
-    // ================= CARREGAR FEED EM TEMPO REAL =================
-    const feedContainer = document.getElementById('feed');
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    
-    onSnapshot(q, (snapshot) => {
-        feedContainer.innerHTML = "";
-        if (snapshot.empty) {
-            feedContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted-nm);">Nenhum post ainda.</p>';
-            return;
-        }
-
-        snapshot.forEach((docSnap) => {
-            const post = docSnap.data();
-            const username = post.autor ? post.autor.split('@')[0] : 'Anonimo';
-            const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
-            
-            let mediaHTML = "";
-            if (post.video) {
-                mediaHTML = `<img src="${post.video}" style="width: 100%; border-radius: 8px; margin-top: 10px; object-fit: cover;">`;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'post-card';
-            card.innerHTML = `
-                <div class="post-header">
-                    <img src="${avatarUrl}" class="post-avatar">
-                    <div style="display: flex; flex-direction: column;">
-                        <span class="post-author">@${username}</span>
-                        <span class="post-time">Postado recentemente</span>
-                    </div>
-                </div>
-                <div class="post-content">${post.text || ''}</div>
-                ${mediaHTML}
-                <div class="post-footer-actions">
-                    <button class="post-action-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3z"/></svg> Curtir</button>
-                    <button class="post-action-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Comentar</button>
-                </div>
-            `;
-            feedContainer.appendChild(card);
+        signOut(auth).then(() => {
+            alert("Logout realizado!");
+            toggleMenu(false);
         });
     });
 
+    // Script visual para arrastar carrossel com mouse no PC
+    const sliders = document.querySelectorAll('.drag-scroll');
+    sliders.forEach(slider => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.style.cursor = 'grabbing';
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.style.cursor = 'pointer';
+        });
+        
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.style.cursor = 'pointer';
+        });
+        
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; 
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    });
 </script>
+
 </body>
 </html>
