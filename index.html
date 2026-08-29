@@ -3,189 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arphen - Web Novels e Comunidade</title>
+    <title>Arphen Social - Ecossistema Completo</title>
     <style>
-        /* ================= VARIÁVEIS E RESET ================= */
+        /* ================= VARIÁVEIS E ESTILOS GLOBAIS ORIGINAIS ================= */
         :root {
-            --bg-main: #15171e;
-            --bg-card: #1e212b;
-            --bg-menu: #1a1d24;
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
-            --accent-cyan: #67e8f9;
-            --accent-blue: #3b82f6;
-            --accent-discord: #5865F2;
-            --border-color: #2d3748;
-            --danger-red: #ef4444;
+            --bg-main: #18191a;
+            --bg-card: #242526;
+            --bg-hover: #3a3b3c;
+            --text-main: #e4e6eb;
+            --accent-white: #ffffff;
+            --accent-blue: #2374e1;
+            --drawer-bg: #2d2d2d;
+            /* Variáveis do Novo Menu (Novel Mania Style) */
+            --bg-menu-nm: #1a1d24;
+            --text-muted-nm: #9ca3af;
+            --accent-cyan-nm: #67e8f9;
+            --danger-red-nm: #ef4444;
+            --border-color-nm: #2d3748;
         }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: sans-serif;
+            margin: 0; padding: 0; overflow-x: hidden;
+        }
+        * { box-sizing: border-box; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-main); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-        a { text-decoration: none; color: inherit; }
-
-        /* ================= LAYOUT PRINCIPAL ================= */
-        .app-container { max-width: 600px; margin: 0 auto; background-color: var(--bg-main); min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; padding-bottom: 80px; }
-
-        /* ================= HEADER ================= */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background-color: var(--bg-main); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border-color); }
-        .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: 1px; }
-        .header-icons { display: flex; gap: 20px; color: var(--text-muted); align-items: center; }
-        .icon-btn { cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        /* ================= SEÇÕES GERAIS ================= */
-        section { padding: 24px 20px; border-bottom: 1px solid var(--border-color); }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .section-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; }
-        .section-title svg { color: var(--accent-cyan); }
-        .view-more { font-size: 14px; color: var(--text-muted); }
-
-        /* ================= FEED DA COMUNIDADE (RESTAURADO) ================= */
-        .feed-container { display: flex; flex-direction: column; gap: 16px; }
-        .post-card { background-color: var(--bg-card); border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--border-color); }
-        .post-author { font-weight: bold; font-size: 15px; color: var(--accent-cyan); }
-        .post-time { font-size: 12px; color: var(--text-muted); }
-        .post-content { font-size: 14px; line-height: 1.5; color: var(--text-main); word-wrap: break-word; }
-
-        /* ================= BOTÃO FLUTUANTE E MODAL DE POST (RESTAURADO) ================= */
-        .fab-btn { position: fixed; bottom: 20px; right: calc(50% - 280px); background-color: var(--accent-blue); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: none; z-index: 90; }
-        @media (max-width: 600px) { .fab-btn { right: 20px; } }
-        
-        .post-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: flex-end; z-index: 1000; }
-        .post-modal-content { background: var(--bg-card); width: 100%; max-width: 600px; border-radius: 15px 15px 0 0; padding: 20px; transform: translateY(100%); transition: transform 0.3s ease; }
-        .post-modal-overlay.active { display: flex; }
-        .post-modal-overlay.active .post-modal-content { transform: translateY(0); }
-        
-        textarea { width: 100%; height: 100px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; color: white; padding: 12px; font-size: 16px; resize: none; outline: none; }
-        .btn-submit { width: 100%; background: var(--accent-blue); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 15px; cursor: pointer; }
-        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* ================= MENU LATERAL (HAMBÚRGUER) ================= */
-        .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        /* ================= NOVO MENU HAMBÚRGUER E LOGIN (NOVEL MANIA STYLE) ================= */
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 8000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .menu-overlay.active { opacity: 1; pointer-events: all; }
-        .side-menu { position: fixed; top: 0; right: -320px; width: 85%; max-width: 320px; height: 100vh; background-color: var(--bg-menu); z-index: 101; transition: right 0.3s ease; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.5); overflow-y: auto; }
+        
+        .side-menu { position: fixed; top: 0; right: -320px; width: 85%; max-width: 320px; height: 100vh; background-color: var(--bg-menu-nm); z-index: 8001; transition: right 0.3s ease; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.5); overflow-y: auto; }
         .side-menu.open { right: 0; }
-        .menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color); }
-        .menu-header h2 { font-size: 18px; font-weight: 800; letter-spacing: 1px; color: #fff; }
-        .close-menu-btn { background: var(--bg-card); border: none; color: var(--text-muted); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color-nm); }
+        .menu-header h2 { font-size: 18px; font-weight: 800; letter-spacing: 1px; color: #fff; margin: 0; }
+        .close-menu-btn { background: var(--bg-card); border: none; color: var(--text-muted-nm); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
         .menu-content { padding: 20px; display: flex; flex-direction: column; gap: 24px; }
-        .menu-section-title { font-size: 11px; color: var(--text-muted); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+        .menu-section-title { font-size: 11px; color: var(--text-muted-nm); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+        
         .menu-item { display: flex; align-items: center; gap: 16px; padding: 12px 16px; color: var(--text-main); font-size: 15px; font-weight: 500; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
         .menu-item:hover { background-color: var(--bg-card); }
-        .menu-item.active { background-color: rgba(103, 232, 249, 0.1); color: var(--accent-cyan); }
-        .menu-item.active svg { stroke: var(--accent-cyan); }
-        .menu-item svg { color: var(--text-muted); }
-        .menu-item.text-red { color: var(--danger-red); }
-        .menu-item.text-red svg { color: var(--danger-red); }
+        .menu-item.active { background-color: rgba(103, 232, 249, 0.1); color: var(--accent-cyan-nm); }
+        .menu-item.active svg { stroke: var(--accent-cyan-nm); }
+        .menu-item svg { color: var(--text-muted-nm); }
+        .menu-item.text-red { color: var(--danger-red-nm); }
+        .menu-item.text-red svg { color: var(--danger-red-nm); }
 
-        /* ================= TELA DE LOGIN ================= */
-        .login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-main); z-index: 200; display: none; flex-direction: column; align-items: center; padding: 40px 20px; overflow-y: auto; }
+        .login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-main); z-index: 9000; display: none; flex-direction: column; align-items: center; padding: 40px 20px; overflow-y: auto; }
         .login-screen.active { display: flex; }
-        .login-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--text-muted); }
-        .login-logo { margin-bottom: 40px; margin-top: 20px; }
+        .login-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--text-muted-nm); }
+        .login-logo { margin-bottom: 40px; margin-top: 20px; color: white; }
         .login-form { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 16px; }
-        .input-group input { width: 100%; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; color: white; font-size: 15px; outline: none; transition: border 0.2s; }
+        .input-group input { width: 100%; background: transparent; border: 1px solid var(--border-color-nm); border-radius: 8px; padding: 16px; color: white; font-size: 15px; outline: none; transition: border 0.2s; }
         .input-group input:focus { border-color: var(--accent-blue); }
         .btn-login { background: #5ab4d8; color: #000; font-weight: bold; border: none; padding: 16px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 8px; }
-        .divider { display: flex; align-items: center; text-align: center; color: var(--text-muted); font-size: 12px; margin: 10px 0; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+        .divider { display: flex; align-items: center; text-align: center; color: var(--text-muted-nm); font-size: 12px; margin: 10px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color-nm); }
         .divider:not(:empty)::before { margin-right: .25em; }
         .divider:not(:empty)::after { margin-left: .25em; }
         .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; border: none; color: white; }
-        .btn-discord { background-color: var(--accent-discord); }
+        .btn-discord { background-color: #5865F2; }
         .btn-google { background-color: #2a2e39; }
         .login-links { margin-top: 20px; display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 400px; }
-        .login-link-item { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 14px; cursor: pointer; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+        .login-link-item { display: flex; justify-content: space-between; color: var(--text-muted-nm); font-size: 14px; cursor: pointer; padding-bottom: 16px; border-bottom: 1px solid var(--border-color-nm); }
 
-        /* ================= CARROSSÉIS E LISTAS ================= */
-        .carousel { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; scrollbar-width: none; }
-        .carousel::-webkit-scrollbar { display: none; }
-        .book-card { flex: 0 0 140px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 8px; cursor: pointer; }
-        .book-cover { position: relative; width: 100%; aspect-ratio: 2/3; border-radius: 8px; overflow: hidden; }
-        .book-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .tag-cyan { position: absolute; bottom: 8px; left: 8px; background: var(--accent-cyan); color: #000; font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 12px; }
-        .book-title { font-size: 14px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .book-author { font-size: 12px; color: var(--text-muted); }
+        /* ================= ESTILOS ORIGINAIS DO APP (FEED, CHAT, REELS, ETC) ================= */
+        .header { background-color: var(--bg-card); display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #3e4042; position: sticky; top: 0; z-index: 1000; }
+        .header-left, .header-right { display: flex; flex-direction: row; align-items: center; }
+        .logo { color: var(--accent-white); font-weight: bold; font-size: 24px; cursor: pointer; }
+        .header-icon { cursor: pointer; padding: 8px; border-radius: 50%; transition: background-color 0.2s; margin-left: 10px; display: flex; align-items: center; justify-content: center; }
+        .header-icon:hover { background-color: var(--bg-hover); }
+        .header-icon svg { width: 24px; height: 24px; fill: var(--accent-white); }
+        
+        .main-nav { display: flex; justify-content: space-around; padding: 10px 0; background-color: var(--bg-card); border-bottom: 1px solid #3e4042; margin-bottom: 20px; }
+        .main-nav-item { cursor: pointer; padding: 8px; border-radius: 8px; transition: background-color 0.2s; position: relative; }
+        .main-nav-item:hover { background-color: var(--bg-hover); }
+        .main-nav-item svg { width: 28px; height: 28px; fill: var(--accent-blue); }
+        .nav-badge { position: absolute; top: -2px; right: -4px; background-color: #e41e3f; color: white; font-size: 11px; font-weight: bold; border-radius: 10px; padding: 1px 5px; border: 2px solid var(--bg-card); display: flex; align-items: center; justify-content: center; z-index: 10; }
+
+        .main-container { max-width: 500px; margin: 0 auto; padding: 0 10px; }
+        
+        .create-post-area { display: flex; align-items: center; padding: 15px; background-color: var(--bg-card); border-radius: 8px; margin-bottom: 20px; }
+        .create-post-area .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; }
+        .create-post-area .post-input-wrapper { flex-grow: 1; margin-right: 10px; }
+        .create-post-area .post-input { width: 100%; background: var(--bg-hover); border: none; color: var(--text-main); height: 40px; border-radius: 20px; padding: 10px 15px; box-sizing: border-box; font-size: 16px; outline: none; }
+        
+        .post-card { background-color: var(--bg-card); border-radius: 8px; padding: 15px; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+        .post-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; }
+        .post-meta-left { display: flex; align-items: center; gap: 10px; }
+        .post-options-btn { background: transparent; border: none; color: #b0b3b8; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .post-footer-actions { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #2f3031; margin-top: 12px; }
+        .post-action-btn { background: transparent; border: none; color: #b0b3b8; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; padding: 6px 14px; border-radius: 20px; }
+        .post-action-btn:hover { background-color: #3a3b3c; color: white; }
+
+        /* Stories */
+        .stories-container { width: 100%; max-width: 500px; margin: 0 auto 20px auto; padding: 0 10px; box-sizing: border-box; }
+        .stories-wrapper { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        .stories-wrapper::-webkit-scrollbar { display: none; }
+        .story-card { position: relative; width: 110px; height: 180px; background-color: #1e1f20; border-radius: 12px; flex-shrink: 0; overflow: hidden; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; justify-content: flex-end; }
+        .story-card img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.65; }
+        .story-card span { position: relative; z-index: 2; color: #ffffff; font-size: 13px; font-weight: 600; margin: 0 0 10px 10px; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9); }
+
+        /* Chat e WebRTC */
+        #chat-list-container, #chat-container, #reels-container, #profile-container, #notifications-container { display: none; max-width: 500px; margin: 0 auto; }
+        .chat-row { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #3e4042; cursor: pointer; }
+        .chat-row:hover { background-color: var(--bg-hover); }
+        .chat-row-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
+        .chat-row-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .chat-row-name { font-size: 16px; font-weight: bold; color: #ffffff; margin: 0; }
+        
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; height: 70vh; }
+        .msg-wrapper { display: flex; flex-direction: column; max-width: 75%; }
+        .msg-wrapper.sent { align-self: flex-end; align-items: flex-end; }
+        .msg-wrapper.received { align-self: flex-start; align-items: flex-start; }
+        .msg-bubble { padding: 10px 14px; border-radius: 18px; color: #e9edef; font-size: 15px; line-height: 1.4; word-break: break-word; }
+        .msg-bubble.sent { background-color: #005c4b; border-bottom-right-radius: 4px; }
+        .msg-bubble.received { background-color: #202c33; border-bottom-left-radius: 4px; }
+
+        /* Modais e Drawers Originais */
+        .post-drawer-animated { position: fixed; bottom: -100%; left: 0; width: 100%; background: #18191a; border-radius: 15px 15px 0 0; z-index: 4500; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); padding: 20px; box-sizing: border-box; color: white; transition: bottom 0.3s ease-in-out; }
+        .drawer-option-item { display: flex; align-items: center; gap: 15px; padding: 14px 4px; cursor: pointer; border-bottom: 1px solid #242526; }
+        .drawer-option-item svg { width: 22px; height: 22px; fill: #b0b3b8; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <!-- HEADER -->
-    <header class="header">
-        <div class="logo">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
-            Arphen
+<!-- ================= HEADER PRINCIPAL ================= -->
+<header class="header">
+    <div class="logo" id="logo-link">Arphen</div>
+    <div class="header-right">
+        <div class="header-icon" id="search-icon">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </div>
-        <div class="header-icons">
-            <div class="icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
-            <div class="icon-btn" id="btn-open-menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+        <div class="header-icon" id="menu-hamburguer-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
         </div>
-    </header>
-
-    <!-- FEED DA COMUNIDADE (RESTAURADO) -->
-    <section>
-        <div class="section-header">
-            <div class="section-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                Feed da Comunidade
-            </div>
-        </div>
-        <div class="feed-container" id="feed-container">
-            <p style="text-align: center; color: var(--text-muted);">Carregando posts...</p>
-        </div>
-    </section>
-
-    <!-- NOVIDADES (CARROSSEL) -->
-    <section>
-        <div class="section-header">
-            <div class="section-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                Novidades
-            </div>
-        </div>
-        <div class="carousel drag-scroll">
-            <div class="book-card">
-                <div class="book-cover">
-                    <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=300&auto=format&fit=crop" alt="Capa">
-                    <span class="tag-cyan">Original</span>
-                </div>
-                <div class="book-title">O que eu deixei para trás?</div>
-                <div class="book-author">LouizPz e Gliy</div>
-            </div>
-            <div class="book-card">
-                <div class="book-cover">
-                    <img src="https://images.unsplash.com/photo-1580477667995-2b94f01c9516?q=80&w=300&auto=format&fit=crop" alt="Capa">
-                    <span class="tag-cyan" style="background: #93c5fd;">Light Novel</span>
-                </div>
-                <div class="book-title">Parece que a Takane-san Gosta de Você</div>
-                <div class="book-author">Kazami Sawatari</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- BOTÃO FLUTUANTE PARA NOVO POST -->
-    <button class="fab-btn" id="btn-open-post-modal">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="white">
-            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-        </svg>
-    </button>
-</div>
-
-<!-- ================= MODAL DE CRIAÇÃO DE POST ================= -->
-<div class="post-modal-overlay" id="post-modal">
-    <div class="post-modal-content">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-            <h3 style="margin: 0;">Criar Post</h3>
-            <span id="btn-close-post-modal" style="cursor: pointer; color: var(--text-muted); font-size: 20px;">&times;</span>
-        </div>
-        <textarea id="post-input" placeholder="O que está acontecendo na comunidade?"></textarea>
-        <button class="btn-submit" id="btn-submit-post">Publicar</button>
     </div>
+</header>
+
+<!-- ================= NAVEGAÇÃO PRINCIPAL ================= -->
+<nav class="main-nav">
+    <div class="main-nav-item" id="home-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+    <div class="main-nav-item" id="friends-icon"><svg viewBox="0 0 24 24" style="fill: none; stroke: var(--accent-white); stroke-width: 2.2px;"><circle cx="15.5" cy="5.5" r="2.5" /><path d="M12.5 11.5c1.2-.7 2.3-.7 3.5-.7 2 0 3.5 1.2 3.5 3v0c0 .8-.7 1.5-1.5 1.5H15" /><circle cx="8.5" cy="8.5" r="2.5" /><path d="M3.5 17.5c0-1.8 1.5-3 3.5-3h3c2 0 3.5 1.2 3.5 3v0c0 .8-.7 1.5-1.5 1.5h-7c-.8 0-1.5-.7-1.5-1.5z" /></svg></div>
+    <div class="main-nav-item" id="messages-icon"><svg viewBox="0 0 24 24" style="fill: none; stroke: var(--accent-white); stroke-width: 2.3px;"><path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/></svg></div>
+    <div class="main-nav-item" id="reels-nav-icon"><svg viewBox="0 0 24 24" style="fill: none; stroke: var(--accent-white); stroke-width: 2px;"><rect x="2" y="2" width="20" height="20" rx="5"></rect><polygon points="10,11 15,14 10,17" style="fill: var(--accent-blue); stroke: none;"></polygon></svg></div>
+</nav>
+
+<!-- ================= CONTAINER PRINCIPAL (FEED) ================= -->
+<div id="app-container">
+    <main class="main-container">
+        
+        <!-- STORIES -->
+        <div class="stories-container">
+            <div class="stories-wrapper" id="stories-list">
+                <div class="story-card" id="btn-open-story-modal">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Arphen" id="user-story-avatar" alt="Minha Foto">
+                    <span style="position: absolute; bottom: 10px; left: 10px; z-index: 10;">Criar story</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRIAR POST -->
+        <section id="create-post-container" class="create-post-area">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Arphen" alt="Avatar" class="user-avatar" id="post-area-avatar">
+            <div class="post-input-wrapper">
+                <input type="text" id="post-text" class="post-input" placeholder="No que você está pensando?">
+            </div>
+            <div id="btn-abrir-modal-foto" style="cursor: pointer; color: #45bd62; display: flex; flex-direction: column; align-items: center; font-size: 12px;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/></svg>
+                Foto
+            </div>
+        </section>
+
+        <!-- FEED LIST -->
+        <section id="feed">
+            <p style="text-align: center; color: var(--text-muted-nm);">Carregando publicações...</p>
+        </section>
+    </main>
 </div>
 
-<!-- ================= MENU LATERAL ================= -->
+<!-- ================= OUTRAS TELAS (OCULTAS POR PADRÃO) ================= -->
+<section id="chat-list-container">
+    <h2 style="padding: 20px; margin: 0;">Mensagens</h2>
+    <div id="conversations-list-wrapper"></div>
+</section>
+
+<section id="chat-container">
+    <div class="header" style="background: #202c33;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="btn-voltar-chat" style="cursor: pointer; font-size: 24px;">&larr;</span>
+            <img src="" id="chat-current-avatar" style="width: 40px; height: 40px; border-radius: 50%;">
+            <h4 id="chat-current-user-name" style="margin: 0;">Usuário</h4>
+        </div>
+    </div>
+    <div class="chat-messages" id="chat-messages-wrapper"></div>
+    <div style="display: flex; padding: 10px; background: #1e212b;">
+        <input type="text" id="chat-message-input-unique" placeholder="Mensagem..." style="flex: 1; padding: 10px; border-radius: 20px; border: none; background: #3a3b3c; color: white; outline: none;">
+        <button id="btn-send-message" style="background: none; border: none; color: var(--accent-blue); font-weight: bold; padding: 0 15px; cursor: pointer;">Enviar</button>
+    </div>
+</section>
+
+<section id="profile-container">
+    <div style="height: 200px; background: #3a3b3c; position: relative;">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Arphen" id="p-avatar-img" style="width: 120px; height: 120px; border-radius: 50%; position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); border: 4px solid var(--bg-main); background: var(--bg-card);">
+    </div>
+    <div style="text-align: center; margin-top: 70px;">
+        <h2 id="p-user-title">Usuário</h2>
+        <p id="p-user-bio" style="color: var(--text-muted-nm); font-size: 14px;">Biografia...</p>
+    </div>
+    <div id="profile-posts-list" style="margin-top: 20px; padding: 10px;"></div>
+</section>
+
+<!-- ================= MENU LATERAL (NOVEL MANIA STYLE) ================= -->
 <div class="menu-overlay" id="menu-overlay"></div>
 <div class="side-menu" id="side-menu">
     <div class="menu-header">
@@ -198,13 +229,13 @@
     <div class="menu-content">
         <div>
             <div class="menu-section-title">NAVEGAÇÃO</div>
-            <div class="menu-item active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Início</div>
+            <div class="menu-item active" id="menu-btn-home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Início</div>
             <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> Encontrar novels</div>
         </div>
 
         <!-- BLOCO DESLOGADO -->
         <div id="menu-logged-out">
-            <div class="menu-item" id="btn-open-login" style="border: 1px solid var(--border-color); justify-content: center; margin-top: 10px;">
+            <div class="menu-item" id="btn-open-login" style="border: 1px solid var(--border-color-nm); justify-content: center; margin-top: 10px;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 Entrar
             </div>
@@ -213,14 +244,14 @@
         <!-- BLOCO LOGADO -->
         <div id="menu-logged-in" style="display: none;">
             <div class="menu-section-title">MINHA CONTA</div>
-            <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Meu perfil</div>
+            <div class="menu-item" id="menu-btn-profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Meu perfil</div>
             <div class="menu-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Favoritos</div>
             <div class="menu-item text-red" id="btn-logout"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sair</div>
         </div>
     </div>
 </div>
 
-<!-- ================= TELA DE LOGIN ================= -->
+<!-- ================= TELA DE LOGIN (NOVEL MANIA STYLE) ================= -->
 <div class="login-screen" id="login-screen">
     <div class="login-close" id="btn-close-login">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -252,11 +283,24 @@
     </div>
 </div>
 
+<!-- ================= MODAL DE POSTAGEM DE FOTO ================= -->
+<div id="foto-modal" class="post-drawer-animated" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; width: 90%; max-width: 400px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Publicar Foto</h3>
+            <span id="btn-fechar-modal-foto" style="cursor: pointer; font-size: 20px;">&times;</span>
+        </div>
+        <input type="text" id="foto-link-input" placeholder="Cole o link da imagem aqui" style="width: 100%; padding: 10px; margin-bottom: 10px; background: var(--bg-hover); border: none; color: white; border-radius: 6px;">
+        <textarea id="foto-text-input" placeholder="Escreva uma legenda..." style="width: 100%; padding: 10px; height: 80px; background: var(--bg-hover); border: none; color: white; border-radius: 6px; resize: none;"></textarea>
+        <button id="btn-publicar-foto" style="width: 100%; padding: 12px; background: #45bd62; color: white; border: none; border-radius: 6px; font-weight: bold; margin-top: 10px; cursor: pointer;">Publicar</button>
+    </div>
+</div>
+
 <!-- ================= JAVASCRIPT E FIREBASE ================= -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDT4HGQrb01P7cyJzd3hQ8kjg-EZGBEB1s",
@@ -271,8 +315,8 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Elementos do Menu e Login
-    const btnOpenMenu = document.getElementById('btn-open-menu');
+    // ================= CONTROLE DO MENU E LOGIN =================
+    const btnOpenMenu = document.getElementById('menu-hamburguer-icon');
     const btnCloseMenu = document.getElementById('btn-close-menu');
     const sideMenu = document.getElementById('side-menu');
     const menuOverlay = document.getElementById('menu-overlay');
@@ -290,15 +334,6 @@
     const menuLoggedOut = document.getElementById('menu-logged-out');
     const menuLoggedIn = document.getElementById('menu-logged-in');
 
-    // Elementos do Feed e Post
-    const btnOpenPostModal = document.getElementById("btn-open-post-modal");
-    const postModal = document.getElementById("post-modal");
-    const btnClosePostModal = document.getElementById("btn-close-post-modal");
-    const btnSubmitPost = document.getElementById("btn-submit-post");
-    const postInput = document.getElementById("post-input");
-    const feedContainer = document.getElementById("feed-container");
-
-    // Lógica do Menu Lateral
     const toggleMenu = (show) => {
         if (show) { sideMenu.classList.add('open'); menuOverlay.classList.add('active'); } 
         else { sideMenu.classList.remove('open'); menuOverlay.classList.remove('active'); }
@@ -307,7 +342,6 @@
     btnCloseMenu.addEventListener('click', () => toggleMenu(false));
     menuOverlay.addEventListener('click', () => toggleMenu(false));
 
-    // Lógica da Tela de Login
     const toggleLogin = (show) => {
         if (show) { loginScreen.classList.add('active'); toggleMenu(false); } 
         else { loginScreen.classList.remove('active'); emailInput.value = ''; passwordInput.value = ''; }
@@ -315,19 +349,27 @@
     btnOpenLogin.addEventListener('click', () => toggleLogin(true));
     btnCloseLogin.addEventListener('click', () => toggleLogin(false));
 
-    // Observador de Estado de Autenticação
+    // ================= ESTADO DE AUTENTICAÇÃO =================
     onAuthStateChanged(auth, (user) => {
         if (user) {
             menuLoggedOut.style.display = 'none';
             menuLoggedIn.style.display = 'block';
             toggleLogin(false);
+            
+            // Atualiza avatares com o email do usuário
+            const username = user.email.split('@')[0];
+            const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
+            document.getElementById('post-area-avatar').src = avatarUrl;
+            document.getElementById('user-story-avatar').src = avatarUrl;
         } else {
             menuLoggedOut.style.display = 'block';
             menuLoggedIn.style.display = 'none';
+            
+            // Avatar padrão deslogado
+            document.getElementById('post-area-avatar').src = "https://api.dicebear.com/7.x/bottts/svg?seed=Arphen";
         }
     });
 
-    // Ações de Autenticação
     btnDoLogin.addEventListener('click', () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
@@ -351,96 +393,124 @@
         signOut(auth).then(() => { alert("Você saiu da conta."); toggleMenu(false); });
     });
 
-    // Lógica do Modal de Postagem
-    const togglePostModal = (show) => {
-        if (show) { postModal.classList.add("active"); postInput.focus(); } 
-        else { postModal.classList.remove("active"); postInput.value = ""; }
-    };
+    // ================= NAVEGAÇÃO ENTRE TELAS =================
+    const telas = ['app-container', 'chat-list-container', 'chat-container', 'profile-container'];
+    const esconderTelas = () => telas.forEach(id => document.getElementById(id).style.display = 'none');
 
-    // 🟢 VERIFICAÇÃO DE LOGIN ANTES DE POSTAR
-    btnOpenPostModal.addEventListener("click", () => {
+    document.getElementById('home-icon').addEventListener('click', () => { esconderTelas(); document.getElementById('app-container').style.display = 'block'; });
+    document.getElementById('menu-btn-home').addEventListener('click', () => { esconderTelas(); document.getElementById('app-container').style.display = 'block'; toggleMenu(false); });
+    document.getElementById('messages-icon').addEventListener('click', () => { esconderTelas(); document.getElementById('chat-list-container').style.display = 'block'; });
+    document.getElementById('menu-btn-profile').addEventListener('click', () => { 
+        if(!auth.currentUser) return alert("Faça login primeiro!");
+        esconderTelas(); 
+        document.getElementById('profile-container').style.display = 'block'; 
+        document.getElementById('p-user-title').innerText = auth.currentUser.email.split('@')[0];
+        document.getElementById('p-avatar-img').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${auth.currentUser.email.split('@')[0]}`;
+        toggleMenu(false); 
+    });
+
+    // ================= LÓGICA DE POSTAGEM (FEED) =================
+    const postTextInput = document.getElementById('post-text');
+    const fotoModal = document.getElementById('foto-modal');
+    const btnAbrirModalFoto = document.getElementById('btn-abrir-modal-foto');
+    const btnFecharModalFoto = document.getElementById('btn-fechar-modal-foto');
+    const btnPublicarFoto = document.getElementById('btn-publicar-foto');
+    const fotoLinkInput = document.getElementById('foto-link-input');
+    const fotoTextInput = document.getElementById('foto-text-input');
+
+    // Verifica login ao tentar postar texto
+    postTextInput.addEventListener('click', () => {
         if (!auth.currentUser) {
             alert("Você precisa entrar na sua conta para postar!");
             toggleLogin(true);
-            return;
         }
-        togglePostModal(true);
     });
-    
-    btnClosePostModal.addEventListener("click", () => togglePostModal(false));
-    postModal.addEventListener("click", (e) => { if(e.target === postModal) togglePostModal(false); });
 
-    // Enviar Post para o Firestore
-    btnSubmitPost.addEventListener("click", async () => {
-        const text = postInput.value.trim();
-        if (!text || !auth.currentUser) return;
+    postTextInput.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (!auth.currentUser) return;
+            const text = postTextInput.value.trim();
+            if (!text) return;
 
-        btnSubmitPost.disabled = true;
-        btnSubmitPost.innerText = "Publicando...";
+            try {
+                await addDoc(collection(db, "posts"), {
+                    autor: auth.currentUser.email,
+                    text: text,
+                    video: "",
+                    createdAt: serverTimestamp()
+                });
+                postTextInput.value = '';
+            } catch (error) { console.error(error); }
+        }
+    });
 
-        // Pega o nome antes do @ do email para usar como username
-        const username = auth.currentUser.email.split('@')[0];
+    // Modal de Foto
+    btnAbrirModalFoto.addEventListener('click', () => {
+        if (!auth.currentUser) { alert("Faça login para postar fotos!"); toggleLogin(true); return; }
+        fotoModal.style.display = 'flex';
+    });
+    btnFecharModalFoto.addEventListener('click', () => fotoModal.style.display = 'none');
+
+    btnPublicarFoto.addEventListener('click', async () => {
+        const link = fotoLinkInput.value.trim();
+        const text = fotoTextInput.value.trim();
+        if (!link) return alert("Cole um link de imagem!");
 
         try {
             await addDoc(collection(db, "posts"), {
-                author: username,
-                content: text,
+                autor: auth.currentUser.email,
+                text: text,
+                video: link, // Usando o campo video para armazenar a mídia (como no original)
                 createdAt: serverTimestamp()
             });
-            togglePostModal(false);
-        } catch (error) {
-            console.error("Erro ao publicar:", error);
-            alert("Erro ao publicar.");
-        } finally {
-            btnSubmitPost.disabled = false;
-            btnSubmitPost.innerText = "Publicar";
-        }
+            fotoLinkInput.value = ''; fotoTextInput.value = '';
+            fotoModal.style.display = 'none';
+        } catch (error) { console.error(error); }
     });
 
-    // Escutar Posts em Tempo Real (Feed)
+    // ================= CARREGAR FEED EM TEMPO REAL =================
+    const feedContainer = document.getElementById('feed');
     const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    
     onSnapshot(q, (snapshot) => {
-        feedContainer.innerHTML = ""; 
+        feedContainer.innerHTML = "";
         if (snapshot.empty) {
-            feedContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Nenhum post ainda. Seja o primeiro!</p>';
+            feedContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted-nm);">Nenhum post ainda.</p>';
             return;
         }
 
-        snapshot.forEach((doc) => {
-            const post = doc.data();
-            const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${post.author}`;
+        snapshot.forEach((docSnap) => {
+            const post = docSnap.data();
+            const username = post.autor ? post.autor.split('@')[0] : 'Anonimo';
+            const avatarUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
             
-            let timeString = "Agora mesmo";
-            if (post.createdAt) {
-                const date = post.createdAt.toDate();
-                timeString = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' - ' + date.toLocaleDateString();
+            let mediaHTML = "";
+            if (post.video) {
+                mediaHTML = `<img src="${post.video}" style="width: 100%; border-radius: 8px; margin-top: 10px; object-fit: cover;">`;
             }
 
-            const card = document.createElement("div");
-            card.className = "post-card";
+            const card = document.createElement('div');
+            card.className = 'post-card';
             card.innerHTML = `
                 <div class="post-header">
-                    <img src="${avatarUrl}" class="post-avatar" alt="Avatar">
+                    <img src="${avatarUrl}" class="post-avatar">
                     <div style="display: flex; flex-direction: column;">
-                        <span class="post-author">@${post.author}</span>
-                        <span class="post-time">${timeString}</span>
+                        <span class="post-author">@${username}</span>
+                        <span class="post-time">Postado recentemente</span>
                     </div>
                 </div>
-                <div class="post-content">${post.content.replace(/\n/g, '<br>')}</div>
+                <div class="post-content">${post.text || ''}</div>
+                ${mediaHTML}
+                <div class="post-footer-actions">
+                    <button class="post-action-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3z"/></svg> Curtir</button>
+                    <button class="post-action-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Comentar</button>
+                </div>
             `;
             feedContainer.appendChild(card);
         });
     });
 
-    // Script simples para permitir arrastar os carrosséis com o mouse no Desktop
-    const sliders = document.querySelectorAll('.drag-scroll');
-    sliders.forEach(slider => {
-        let isDown = false; let startX; let scrollLeft;
-        slider.addEventListener('mousedown', (e) => { isDown = true; slider.style.cursor = 'grabbing'; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
-        slider.addEventListener('mouseleave', () => { isDown = false; slider.style.cursor = 'pointer'; });
-        slider.addEventListener('mouseup', () => { isDown = false; slider.style.cursor = 'pointer'; });
-        slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk; });
-    });
 </script>
 </body>
 </html>
