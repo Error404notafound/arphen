@@ -694,9 +694,17 @@ import {
     signInWithPopup     // <-- Adicionado
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-const firebaseConfig = { /* ... suas credenciais ... */ };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const firebaseConfig = {
+        apiKey: "AIzaSyDT4HGQrb01P7cyJzd3hQ8kjg-EZGBEB1s",
+        authDomain: "arphen-be704.firebaseapp.com",
+        projectId: "arphen-be704",
+        storageBucket: "arphen-be704.firebasestorage.app",
+        messagingSenderId: "164337006671",
+        appId: "1:164337006671:web:98ec3900cdbd86b6fb523a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
 // ... seus controles de DOM existentes ...
 
@@ -718,17 +726,7 @@ btnGoogle.addEventListener('click', () => {
         });
 });
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDT4HGQrb01P7cyJzd3hQ8kjg-EZGBEB1s",
-        authDomain: "arphen-be704.firebaseapp.com",
-        projectId: "arphen-be704",
-        storageBucket: "arphen-be704.firebasestorage.app",
-        messagingSenderId: "164337006671",
-        appId: "1:164337006671:web:98ec3900cdbd86b6fb523a"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    
 
     // ==========================================
     // CONTROLE DE DOM: MENU HAMBÚRGUER E LOGIN
