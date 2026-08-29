@@ -683,7 +683,40 @@
 <script type="module">
     // Importações e Config do Firebase (Exatamente igual ao requisitado)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    // 1. Adicionamos GoogleAuthProvider e signInWithPopup nas importações
+import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword, 
+    onAuthStateChanged, 
+    signOut,
+    GoogleAuthProvider, // <-- Adicionado
+    signInWithPopup     // <-- Adicionado
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+const firebaseConfig = { /* ... suas credenciais ... */ };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// ... seus controles de DOM existentes ...
+
+// 2. Mapeamos o botão do Google
+const btnGoogle = document.querySelector('.btn-google');
+
+// 3. Adicionamos a lógica de login com o Google
+btnGoogle.addEventListener('click', () => {
+    const provider = new GoogleAuthProvider();
+    
+    // Abre a janela de login do Google
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            alert(`Bem-vindo, ${result.user.displayName}!`);
+            toggleLogin(false); // Fecha a tela de login
+        })
+        .catch((error) => {
+            alert("Erro ao entrar com o Google: " + error.message);
+        });
+});
 
     const firebaseConfig = {
         apiKey: "AIzaSyDT4HGQrb01P7cyJzd3hQ8kjg-EZGBEB1s",
